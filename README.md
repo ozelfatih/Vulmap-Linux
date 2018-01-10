@@ -1,6 +1,7 @@
-# Vulmon Mapper(vulmap) v1.0
+# vulmap(Vulmon Mapper) v1.0
 Find latest vulnerabilities and exploits on local host.
 
+## Working Principle
 * Get vulnerabilities and exploits that affects the host.
 * Download a specific exploit or download all.
 
@@ -10,7 +11,6 @@ Download vulmap:
 ```
 git clone https://github.com/ozelfatih/vulmap.git
 ```
-It's done!
 
 Run the program with following command:
 
