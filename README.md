@@ -1,4 +1,4 @@
-# vulmap(Vulmon Mapper) v1.0
+# VulMap(Vulmon Mapper) v1.0
 Find latest vulnerabilities and exploits on local host.
 
 ## Working Principle
