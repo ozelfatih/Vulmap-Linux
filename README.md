@@ -1,4 +1,4 @@
-# vulmap(Vulmon Mapper)
+# Vulmap(Vulmon Mapper)
 Host-based vulnerability scanner. Find installed packages on the host, ask their vulnerabilities to [vulmon.com](http://vulmon.com) API and print vulnerabilities with available exploits. All found exploits can be downloaded by Vulmap.
 
 
@@ -28,7 +28,7 @@ Short Form | Long Form | Description
 ------------ | ------------- | -------------
 -v | --verbose | Enable the verbose mode and display results in realtime
 -d | --download | <exploit_id> to download a specific exploit
--a | --all_download | Download all found exploits 
+-a | --all-download | Download all found exploits 
 -h | --help | Show the help message and exit
 
 ### Examples
@@ -56,8 +56,8 @@ python vulmap.py -d EDB20
 python vulmap.py -d EDB8310
 ```
 
-## License
-Vulmap is licensed under the GNU GPL license. Take a look at the [LICENSE](https://github.com/ozelfatih/vulmap/blob/master/LICENSE) for more information.
-
 ## Version
 Current version is 1.0
+
+## License
+Vulmap is licensed under the GNU GPL license. Take a look at the [LICENSE](https://github.com/ozelfatih/vulmap/blob/master/LICENSE) for more information.
