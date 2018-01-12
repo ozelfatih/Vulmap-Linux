@@ -1,31 +1,29 @@
-# VulMap(Vulmon Mapper)
-Find latest vulnerabilities and exploits on local host.
+# vulmap(Vulmon Mapper)
+Host-based vulnerability scanner. Find installed packages on the host, ask their vulnerabilities to [vulmon.com](http://vulmon.com) API and print vulnerabilities with available exploits. All found exploits can be downloaded by Vulmap.
 
-## Working Principle
-* Get vulnerabilities and exploits that affects the host.
-* Download a specific exploit or download all.
 
-### Screenshot
+## Screenshot
 ![Screenshot from terminal](https://github.com/ozelfatih/vulmap/blob/master/screenhots.png?raw=true)
 
 ## Recommended Platform and Python Version
 Vulmap currently only supports linux platforms and ![Python2](https://camo.githubusercontent.com/91573a399273230bbd7a6391aff545172fe49fb5/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f507974686f6e2d322d79656c6c6f772e737667).
 * The recommended version for Python 2 is 2.7.x
 
-* Run **deb** and **rpm** packages of linux.
+* Compatible with Linux distros uses **dpkg** and **rpm**
 
 ## Installation
 ```
 git clone https://github.com/ozelfatih/vulmap.git
 ```
 
-Run the program with following command:
+Run in default mode
 ```
-cd vulmap/
-python vulmap.py -h
+python vulmap.py
 ```
 
 ## Usage
+Default mode. Check vulnerabilities of installed packages.
+
 Short Form | Long Form | Description
 ------------ | ------------- | -------------
 -v | --verbose | Enable the verbose mode and display results in realtime
@@ -38,21 +36,24 @@ Short Form | Long Form | Description
 ```
 python vulmap.py -h
 ```
-* Normally mode:
+* Run in default mode:
 ```
 python vulmap.py
 ```
-* To enumerate package version's of local host and show the results in realtime:
+* Enable the verbose mode:
 ```
 python vulmap.py -v
-```
-* To download of specific exploit:
-```
-python vulmap.py -d <exploit_id>
 ```
 * To download of all found exploits:
 ```
 python vulmap.py -a
+```
+* To download a specific exploit::
+```
+python vulmap.py -d <exploit_id>
+
+python vulmap.py -d EDB20
+python vulmap.py -d EDB8310
 ```
 
 ## License
