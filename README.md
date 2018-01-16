@@ -3,7 +3,7 @@ Host-based vulnerability scanner. Find installed packages on the host, ask their
 
 
 ## Screenshot
-![Screenshot from terminal](https://github.com/ozelfatih/vulmap/blob/master/screenhots.png?raw=true)
+![Screenshot from terminal](https://raw.githubusercontent.com/ozelfatih/vulmap/master/screenshot.png)
 
 ## Recommended Platform and Python Version
 Vulmap currently only supports linux platforms and ![Python2](https://camo.githubusercontent.com/91573a399273230bbd7a6391aff545172fe49fb5/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f507974686f6e2d322d79656c6c6f772e737667)
