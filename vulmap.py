@@ -1,28 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-
 #==========================================================================
-# LIBRARIES python2.x
+# LIBRARIES
 #==========================================================================
 import json
 import string
 import urllib
-import urllib2
 import argparse
 import subprocess
-
-__version__ = 1.0
-
 #==========================================================================
 # GLOBAL VARIABLES
 #==========================================================================
 tempList = []
 productList = []
-
+data = []
+__version__ = 1.0
 #==========================================================================
 # CLASSES
 #==========================================================================
-
 class bcolors:
 	HEADER = '\033[95m'
 	OKBLUE = '\033[94m'
@@ -33,259 +28,172 @@ class bcolors:
 	BOLD = '\033[1m'
 	UNDERLINE = '\033[4m'
 
+class apiRequest:
+	def __init__(self, product, version, mode):
+		global data
+		self.product = product
+		self.version = version
+		self.mode = mode
+
+		apistart = "http://vulmon.com/scannerapi?api=start&dev=1"
+		urllib.urlopen(apistart)
+		self.url = "http://vulmon.com/scannerapi?product=" + self.product + "&version=" + self.version + "&dev=1"
+
+		try:
+			data = json.load(urllib.urlopen(self.url))
+		except Exception, e:
+			print e
+
+	def vulnerabilityCheck(self):
+		if self.mode == "exploit":
+			if data["totalHits"]:
+				for k in range(0,len(data["results"])):
+					try:
+						if data["results"][k]["exploits"]:
+							print bcolors.FAIL + "[>] " + bcolors.ENDC + "Product: " + self.product + " " + self.version
+							for j in range(0, len(data["results"][k]["exploits"])):
+								exploit_url = data["results"][k]["exploits"][j]["url"]
+								title = data["results"][k]["exploits"][j]["title"]
+
+								edb_id = exploit_url.split("=")
+								url = 'http://vulmon.com/downloadexploit?qid=' + edb_id[1] + "&dev=1"
+								urllib.urlretrieve(url, ("Exploit_" + edb_id[1] + "_" + self.product + "_" + self.version))
+
+								print bcolors.FAIL + "[+] " + bcolors.ENDC + "Title: " + title
+								print bcolors.FAIL + "[!] Exploit ID: " + edb_id[1] + bcolors.ENDC
+					except Exception, e:
+						continue
+					print ""
+		else:
+			if data["totalHits"]:
+				print bcolors.OKGREEN + "[*] " + bcolors.ENDC + "Vulnerability Found!"
+				print bcolors.OKGREEN + "[>]" + bcolors.ENDC + " Product: " + self.product + " " + self.version
+				for i in range(0, len(data["results"])):
+					print bcolors.OKGREEN + "[+]" + bcolors.ENDC + " CVEID: " + data["results"][i]["CVEID"] + "	" + "Score: " + str(data["results"][i]["CVSSv2BaseScore"]) + "	" + "URL: " + data["results"][i]["url"]
+					try:
+						if data["results"][i]["exploits"]:
+							print bcolors.FAIL + "	[*] " + bcolors.ENDC +"Available Exploits!!!"
+							for j in range(0, len(data["results"][i]["exploits"])):
+								exploit_url = data["results"][i]["exploits"][j]["url"]
+								edb_id = exploit_url.split("=")
+								print bcolors.FAIL + "	[!]" + bcolors.ENDC + " Exploit ID: " + edb_id[1] + " URL: " + str(data["results"][i]["exploits"][j]["url"]) + " (" + data["results"][i]["exploits"][j]["title"] +")"
+								#url = 'http://vulmon.com/downloadexploit?qid=' + edb_id[1] + "&dev=1"
+								#print bcolors.FAIL + "\t[!]" + bcolors.ENDC + " Click Exploit Download: " + url
+					except Exception, e:
+						continue
+				print ""
+			else:
+				if self.mode == "verbose":
+					print bcolors.WARNING + "[-]" + bcolors.ENDC + " Product: " + self.product + " " + self.version
 #==========================================================================
 # FUNCTIONS
 #==========================================================================
-def header():
-	print "###################################################################"
-	print "                                                               	  "
-	print "██╗        ██╗   ██╗██╗   ██╗██╗     ███╗   ███╗ █████╗ ██████╗    "
-	print "╚██╗       ██║   ██║██║   ██║██║     ████╗ ████║██╔══██╗██╔══██╗   "
-	print " ╚██╗      ██║   ██║██║   ██║██║     ██╔████╔██║███████║██████╔╝   "
-	print " ██╔╝      ╚██╗ ██╔╝██║   ██║██║     ██║╚██╔╝██║██╔══██║██╔═══╝ 	  "
-	print "██╔╝███████╗╚████╔╝ ╚██████╔╝███████╗██║ ╚═╝ ██║██║  ██║██║     	  "
-	print "╚═╝ ╚══════╝ ╚═══╝   ╚═════╝ ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝    	  "
-	print "			    						                                              "
-	print "###################################################################"
-	print "Vulmon Mapper v1.0"
-	print "\n"
+def banner():
+	print ">_||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||_<"
+	print "                                                               	   "
+	print "  ██╗        ██╗   ██╗██╗   ██╗██╗     ███╗   ███╗ █████╗ ██████╗   "
+	print "  ╚██╗       ██║   ██║██║   ██║██║     ████╗ ████║██╔══██╗██╔══██╗  "
+	print "   ╚██╗      ██║   ██║██║   ██║██║     ██╔████╔██║███████║██████╔╝  "
+	print "   ██╔╝      ╚██╗ ██╔╝██║   ██║██║     ██║╚██╔╝██║██╔══██║██╔═══╝   "
+	print "  ██╔╝███████╗╚████╔╝ ╚██████╔╝███████╗██║ ╚═╝ ██║██║  ██║██║       "
+	print "  ╚═╝ ╚══════╝ ╚═══╝   ╚═════╝ ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝       "
+	print "===================================================================="
+	print "\                       Vulmon Mapper v1.0                         /"
+	print " \                        www.vulmon.com                          /"
+	print "  \==============================================================/\n"
 
 def args():
 	global args
 
-	desc = """
-	Find latest vulnerabilities and exploits on local host.
-	"""
-	epilog = """
-	Examples:
-	Use %(prog)s to get vulnerabilities and exploits that affects the host.
-	Use %(prog)s to -d <exploit_id> to download a specific exploit.
-	Use %(prog)s -a to download all found exploits.
-	Use %(prog)s -v for verbose mode.
-	"""
+	desc = "Host-based vulnerability scanner. Find installed packages on the host, ask their vulnerabilities to vulmon.com API and print vulnerabilities with available exploits. All found exploits can be downloaded by Vulmap."
 
-	parser = argparse.ArgumentParser('vulmap.py', description=desc, epilog=epilog)
-	parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Verbose mode', dest='verbose', required=False)
+	parser = argparse.ArgumentParser('vulmap.py', description=desc)
 
-	parser.add_argument('-a', '--download_all', action="store_true", default=False, help='Download all found exploits', dest='exploit', required=False)
-
-	parser.add_argument('-d', '--download', type=str, dest='exploit_ID', help='Download a specific exploit ./%(prog)s -d EDB16372', required=False)
-
-	parser.add_argument('--version', action='version', version='%(prog)s version v' + str(__version__))
-
+	parser.add_argument('-v', '--verbose', action='store_true', default=False, help='Verbose mode', dest='verbose', required=False)
+	parser.add_argument('-a', '--all-download', action='store_true', default=False, help='Download all found exploits', dest='exploit', required=False)
+	parser.add_argument('-d', '--download', type=str, default=False, help='Download a specific exploit ./%(prog)s -d EDB16372', dest='exploit_ID', required=False)
+	parser.add_argument('--version', action='version', version='%(prog)s version ' + str(__version__))
 	args = parser.parse_args()
 
+def linuxSystemInfo():
+	distro = "cat /etc/*release | grep ID"	
+	kernel = "uname -mrs"
 
-def getDistroInfo():
-	command = "cat /etc/*release | grep ID"
-	action = subprocess.Popen(command, shell = True, stdout = subprocess.PIPE)
+	action = subprocess.Popen(distro, shell = True, stdout = subprocess.PIPE)
+	distroResults = action.communicate()[0].split('\n')
 
-	results = action.communicate()[0].split('\n')
+	action2 = subprocess.Popen(kernel, shell = True, stdout = subprocess.PIPE)
+	kernelResults = action2.communicate()[0].split(" ")
 
-	for i in range(0, len(results)-1):
-		a = results[i].split("=")
-		if a[0]=='ID':
-			ID = "ID: " + a[1] + " "
-		if a[0]=='VERSION_ID':
-			VERSION = "VERSION: " + str(a[1]).strip('"')
-	print ID 
-	print VERSION 
+	for i in range(0, len(distroResults)-1):
+		split = distroResults[i].split("=")
+		if split[0] == 'ID':
+			ID = str(split[1]).strip('"')
+		if split[0] == 'VERSION_ID':
+			VERSION = str(split[1]).strip('"')
+	print "[*] Distro Information"
+	print "[>] DISTRO ID: " + ID + " VERSION: " + VERSION + "\n"
+	print "[*] Kernel Information"
+	print "[>] SYSTEM: " + kernelResults[0] + " VERSION: " + kernelResults[1] + " ARCHITECTURE: " + kernelResults[2]
 
-
-def getKernelInfo():
-	command = "uname -mrs"
-
-	action = subprocess.Popen(command, shell = True, stdout = subprocess.PIPE)
-
-	results = action.communicate()[0].split(" ")
-
-	print "SYSTEM: " + results[0]
-	print "VERSION: " + results[1]
-	print "ARCHITECTURE: " + results[2]
-
-	
-def getProductList_dpkg():
-	global tempList
+def getProductList():
 	global productList
-	command = "dpkg-query -W -f='${Package} ${Version}\n'"
-	
-	action = subprocess.Popen(command, shell = True, stdout = subprocess.PIPE)
-
+	rpm = ""
+	dpkg = "dpkg-query -W -f='${Package} ${Version}\n'"
+	action = subprocess.Popen(dpkg, shell = True, stdout = subprocess.PIPE)
 	results = action.communicate()[0]
-		
+	if 'command not found' in results:
+		rpm = "rpm -qa --qf '%{NAME} %{VERSION}\n'"
+		action2 = subprocess.Popen(rpm, shell = True, stdout = subprocess.PIPE)
+		results = action2.communicate()[0]
 	tempList = results.split("\n")
 
 	for i in range(0,len(tempList)-1):
 		productList.append(tempList[i].split(" "))
-
-def getProductList_rpm():
-	global tempList
-	global productList
-
-	command = "rpm -qa --qf '%{NAME} %{VERSION}\n'"
-	
-	action = subprocess.Popen(command, shell = True, stdout = subprocess.PIPE)
-
-	results = action.communicate()[0]
-		
-	tempList = results.split("\n")
-
-	for i in range(0,len(tempList)-1):
-		productList.append(tempList[i].split(" "))
-
-
-def parseProductList_dpkg():
-	global productList
-	for i in range(0,len(productList)):
+		if rpm != "":
+				productList[i][0] = string.replace(productList[i][0], '-','_').lower()
 		productList[i][0] = (string.replace(productList[i][0], '-','_').replace(':','_').replace('.','_')).lower()
 
-
-def parseProductList_rpm():
-	global productList
-	for i in range(0,len(productList)):
-		productList[i][0] = string.replace(productList[i][0], '-','_').lower()
-
-
-def vulnerabilityCheck_verbose():
-	global productList
-	print "[Info] Verbose mode, scan starting..."
-	for i in range(0,len(productList)):
-		product = str(productList[i][0])
-		version = str(productList[i][1])
-	
-		url = "http://vulmon.com/scannerapi?product=" + product + "&version=" + version
-	
-		try:
-			data = json.load(urllib2.urlopen(url))
-		except Exception, e:
-			print "Internet, not connection!\n"
-			break
-		if data["totalHits"]:
-			if data["totalHits"]:
-				print ""
-				print bcolors.OKGREEN + "[*]" + bcolors.ENDC + " Vulnerability Found!"
-				print bcolors.OKGREEN + "[>]" + bcolors.ENDC + " Product: " + product + " " + version
-			for i in range(0, len(data["results"])):
-				print bcolors.OKGREEN + "[+]" + bcolors.ENDC + " CVEID: " + data["results"][i]["CVEID"] + "	" + "Score: " + str(data["results"][i]["CVSSv2BaseScore"]) + "	" + "URL: " + data["results"][i]["url"]
-
-				try:
-					if data["results"][i]["exploits"]:
-						print bcolors.FAIL + "	[*]" + bcolors.ENDC + " Available Exploits!!!"
-						for j in range(0, len(data["results"][i]["exploits"])):
-							exploit_url = data["results"][i]["exploits"][j]["url"]
-							edb_id = exploit_url.split("=")
-							print bcolors.FAIL + "	[!]" + bcolors.ENDC + " Exploit ID: " + edb_id[1] + " URL: " + str(data["results"][i]["exploits"][j]["url"]) + " (" + data["results"][i]["exploits"][j]["title"] +")"
-				except Exception, e:
-					continue
-			print ""
- 		else:
- 			print bcolors.WARNING + "[-]" + bcolors.ENDC + " Product: " + product + " " + version
-	
-	print "STATE: SCAN END!"
-
-
-def vulnerabilityCheck():
-	global productList
-	print "[Info] Normally mode, scan starting..."
-	for i in range(0,len(productList)):
-		product = str(productList[i][0])
-		version = str(productList[i][1])
-	
-		url = "http://vulmon.com/scannerapi?product=" + product + "&version=" + version
-		
-		try:
-			data = json.load(urllib2.urlopen(url))
-		except Exception, e:
-			print "Internet, not connection!"
-			break
-		
-		if data["totalHits"]:
-			print bcolors.OKGREEN + "[*] " + bcolors.ENDC + "Vulnerability Found!"
-			print bcolors.OKGREEN + "[>]" + bcolors.ENDC + " Product: " + product + " " + version
-			for i in range(0, len(data["results"])):
-				print bcolors.OKGREEN + "[+]" + bcolors.ENDC + " CVEID: " + data["results"][i]["CVEID"] + "	" + "Score: " + str(data["results"][i]["CVSSv2BaseScore"]) + "	" + "URL: " + data["results"][i]["url"]
-
-				try:
-					if data["results"][i]["exploits"]:
-						print bcolors.FAIL + "	[*] " + bcolors.ENDC +"Available Exploits!!!"
-						for j in range(0, len(data["results"][i]["exploits"])):
-							exploit_url = data["results"][i]["exploits"][j]["url"]
-							edb_id = exploit_url.split("=")
-							print bcolors.FAIL + "	[!]" + bcolors.ENDC + " Exploit ID: " + edb_id[1] + " URL: " + str(data["results"][i]["exploits"][j]["url"]) + " (" + data["results"][i]["exploits"][j]["title"] +")"
-				except Exception, e:
-					continue
-
-			print ""
-
-	print "STATE: SCAN END!"
-
-
-def exploitDownload(exploit_id):
+def exploitDownload(exploit_ID):
 	try:
-		url = "http://www.vulmon.com/downloadexploit?qid=" + exploit_id
-		EDB = url.split("=")
-		print "[Info] Exploit downloading..."
-		urllib.urlretrieve(url, ("Exploit_" + EDB[1]))
-		print bcolors.FAIL + "	[*] " + bcolors.ENDC +"Exploit Downloaded!"
-		print bcolors.FAIL + "	[!] " + bcolors.ENDC + "Make use of Exploit ID: " + EDB[1]
+		apistart = "http://vulmon.com/scannerapi?api=start&dev=1"
+		urllib.urlopen(apistart)
+		url = "http://vulmon.com/downloadexploit?qid=" + exploit_ID + "&dev=1"
+		urllib.urlretrieve(url, ("Exploit_" + exploit_ID))
+		print "[Info] Specific exploit downloading..."
+		print bcolors.FAIL + "[*] " + bcolors.ENDC + "Exploit Downloaded!"
+		print bcolors.FAIL + "[!] Make use of exploit file: Exploit_" + exploit_ID + bcolors.ENDC
+		print bcolors.OKGREEN + "[STATUS] EXPLOIT DOWNLOADED." + bcolors.ENDC
 	except Exception, e:
-		print "Internet, not connection!"
-
-def exploitDownload_all():
-	global productList
-	print "[Info] All exploits downloading..."
-	for i in range(0,len(productList)):
-		product = str(productList[i][0])
-		version = str(productList[i][1])
-
-		url = "http://vulmon.com/scannerapi?product=" + product +"&version="+ version
-		try:
-			data = json.load(urllib2.urlopen(url))
-		except Exception, e:
-			print "Internet, not connection!"
-			break
-		
-		if data["totalHits"]:	
-			for k in range(0,len(data["results"])):
-				try:
-					if data["results"][k]["exploits"]:
-						print bcolors.FAIL + "	[+] " + bcolors.ENDC + "Product: " + product + " " + version
-						for j in range(0, len(data["results"][k]["exploits"])):
-							exploit_url = data["results"][k]["exploits"][j]["url"]
-
-							edb_id = exploit_url.split("=")
-							url = 'http://www.vulmon.com/downloadexploit?qid=' + edb_id[1]
-							urllib.urlretrieve(url, ("Exploit_" + edb_id[1] + "_" + product + "_" + version))
-
-							print bcolors.FAIL + "	[!] " + bcolors.ENDC + "Exploit ID: " + edb_id[1]
-				except Exception, e:
-					continue
-				print ""
-
-
+		print e
 #==========================================================================
 # MAIN PROGRAM
 #==========================================================================
+if __name__ == '__main__':
+	banner()
+	args()
+	getProductList()
 
-header()
-args()
+	if args.exploit_ID:
+		exploitDownload(args.exploit_ID)
+	else:
+		linuxSystemInfo()
+		for i in range(0,len(productList)):
+			product = str(productList[i][0])
+			version = str(productList[i][1])
 
-try:
-	getProductList_dpkg()
-	parseProductList_dpkg()
-except Exception, e:
-	getProductList_rpm()
-	parseProductList_rpm()
-
-if args.verbose:
-	getDistroInfo()
-	getKernelInfo()
-	vulnerabilityCheck_verbose()
-elif args.exploit_ID:
-	exploitDownload(args.exploit_ID)
-elif args.exploit:
-	exploitDownload_all()
-else:
-	getDistroInfo()
-	getKernelInfo()
-	vulnerabilityCheck()
+			if args.verbose:
+				if i == 0:
+					print "[Info] Verbose mode. Check vulnerabilities of installed packages..."
+				response = apiRequest(product, version, "verbose")
+				response.vulnerabilityCheck()
+			elif args.exploit:
+				if i == 0:
+					print "[Info] All exploit download mode starting..."
+				response = apiRequest(product, version, "exploit")
+				response.vulnerabilityCheck()
+			else:
+				if i == 0:
+					print "[Info] Default mode. Check vulnerabilities of installed packages..."
+				response = apiRequest(product, version, "default")
+				response.vulnerabilityCheck()
