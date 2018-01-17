@@ -2,8 +2,10 @@
 Host-based vulnerability scanner. Find installed packages on the host, ask their vulnerabilities to [vulmon.com](http://vulmon.com) API and print vulnerabilities with available exploits. All found exploits can be downloaded by **Vulmap**.
 
 
-## Screenshot
+## Screenshots
 ![Screenshot from terminal](https://raw.githubusercontent.com/ozelfatih/vulmap/master/screenshot.png)
+
+![Screenshot-2 from terminal](https://raw.githubusercontent.com/ozelfatih/vulmap/master/screenshot-2.png)
 
 ## Recommended Platform and Python Version
 Vulmap currently only supports linux platforms and ![Python2](https://camo.githubusercontent.com/91573a399273230bbd7a6391aff545172fe49fb5/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f507974686f6e2d322d79656c6c6f772e737667)
