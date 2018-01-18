@@ -28,7 +28,7 @@ class bcolors:
 	BOLD = '\033[1m'
 	UNDERLINE = '\033[4m'
 
-class apiRequest:
+class ApiRequest:
 	def __init__(self, product, version, mode):
 		global data
 		self.product = product
@@ -185,15 +185,15 @@ if __name__ == '__main__':
 			if args.verbose:
 				if i == 0:
 					print "[Info] Verbose mode. Check vulnerabilities of installed packages..."
-				response = apiRequest(product, version, "verbose")
+				response = ApiRequest(product, version, "verbose")
 				response.vulnerabilityCheck()
 			elif args.exploit:
 				if i == 0:
 					print "[Info] All exploit download mode starting..."
-				response = apiRequest(product, version, "exploit")
+				response = ApiRequest(product, version, "exploit")
 				response.vulnerabilityCheck()
 			else:
 				if i == 0:
 					print "[Info] Default mode. Check vulnerabilities of installed packages..."
-				response = apiRequest(product, version, "default")
+				response = ApiRequest(product, version, "default")
 				response.vulnerabilityCheck()
