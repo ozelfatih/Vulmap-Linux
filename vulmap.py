@@ -142,7 +142,7 @@ def getProductList():
 	dpkg = "dpkg-query -W -f='${Package} ${Version}\n'"
 	action = subprocess.Popen(dpkg, shell = True, stdout = subprocess.PIPE)
 	results = action.communicate()[0]
-	if 'command not found' in results:
+	if '' in results:
 		rpm = "rpm -qa --qf '%{NAME} %{VERSION}\n'"
 		action2 = subprocess.Popen(rpm, shell = True, stdout = subprocess.PIPE)
 		results = action2.communicate()[0]
