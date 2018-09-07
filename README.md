@@ -1,4 +1,4 @@
-# Vulmap(Vulmon Mapper)
+# Vulmap Linux
 Host-based vulnerability scanner. Find installed packages on the host, ask their vulnerabilities to [vulmon.com](http://vulmon.com) API and print vulnerabilities with available exploits. All found exploits can be downloaded by **Vulmap**.
 
 
