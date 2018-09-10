@@ -1,6 +1,7 @@
 # Vulmap Linux
 Host-based vulnerability scanner. Find installed packages on the host, ask their vulnerabilities to [vulmon.com](http://vulmon.com) API and print vulnerabilities with available exploits. All found exploits can be downloaded by **Vulmap**.
 
+Vulmap Linux is part of [Vulmap Local Vulnerability Scanners Project](https://github.com/vulmon/Vulmap-Local-Vulnerability-Scanners)
 
 ## Screenshots
 ![Screenshot from terminal](https://raw.githubusercontent.com/ozelfatih/vulmap/master/screenshot.png)
