@@ -85,6 +85,7 @@ class ApiRequest:
 			else:
 				if self.mode == "verbose":
 					print bcolors.WARNING + "[-]" + bcolors.ENDC + " Product: " + self.product + " " + self.version
+
 #==========================================================================
 # FUNCTIONS
 #==========================================================================
@@ -138,20 +139,13 @@ def linuxSystemInfo():
 
 def getProductList():
 	global productList
-	rpm = ""
 	dpkg = "dpkg-query -W -f='${Package} ${Version}\n'"
 	action = subprocess.Popen(dpkg, shell = True, stdout = subprocess.PIPE)
 	results = action.communicate()[0]
-	if '' in results:
-		rpm = "rpm -qa --qf '%{NAME} %{VERSION}\n'"
-		action2 = subprocess.Popen(rpm, shell = True, stdout = subprocess.PIPE)
-		results = action2.communicate()[0]
 	tempList = results.split("\n")
 
 	for i in range(0,len(tempList)-1):
 		productList.append(tempList[i].split(" "))
-		if rpm != "":
-				productList[i][0] = string.replace(productList[i][0], '-','_').lower()
 		productList[i][0] = (string.replace(productList[i][0], '-','_').replace(':','_').replace('.','_')).lower()
 
 def exploitDownload(exploit_ID):
