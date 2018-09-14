@@ -12,7 +12,7 @@ Vulmap Linux is part of [Vulmap Local Vulnerability Scanners Project](https://gi
 Vulmap currently only supports linux platforms and ![Python2](https://camo.githubusercontent.com/91573a399273230bbd7a6391aff545172fe49fb5/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f507974686f6e2d322d79656c6c6f772e737667)
 * The recommended version for Python 2 is 2.7.x
 
-* Compatible with Linux distros uses **dpkg** and **rpm**
+* Compatible with Linux distros uses **dpkg**
 
 ## Installation
 ```
